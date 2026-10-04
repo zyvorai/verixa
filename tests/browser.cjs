@@ -15,13 +15,14 @@ async function check(name,fn){await fn();checks++;console.log('PASS '+name);}
  await page.goto(url);
  await check('sign-in screen',async()=>{await page.getByRole('heading',{name:'Sign in.'}).waitFor();assert.equal(await page.locator('#login').isVisible(),true);});
  await page.locator('#login-user').fill('admin');await page.locator('#login-pass').fill('wrong-password');await page.getByRole('button',{name:'Sign in'}).click();
- await check('wrong password rejected',async()=>assert.match(await page.locator('#login-error').textContent({timeout:5000}),/Wrong username or password/));
+ await check('wrong password rejected',async()=>{await page.waitForFunction(()=>/Wrong username or password/.test(document.querySelector('#login-error').textContent));});
  await page.locator('#login-pass').fill(token);await page.getByRole('button',{name:'Sign in'}).click();await page.locator('#app').waitFor();
  await check('bearer never stored in browser storage',async()=>assert.equal(await page.evaluate(()=>JSON.stringify(sessionStorage)+JSON.stringify(localStorage)).then(x=>x.includes(token)),false));
  await check('overview and live evidence',async()=>{await page.getByRole('heading',{name:'Know what your agent will do.'}).waitFor();assert.equal(await page.locator('.metric strong').first().getAttribute('data-count'),'11');});
  const capture=async name=>{if(process.env.VERIXA_CAPTURE==='1'){fs.mkdirSync(path.join(root,'docs','ux'),{recursive:true});await page.screenshot({path:path.join(root,'docs','ux',name+'.png'),fullPage:true});}};
  await capture('01-overview');
- await page.getByRole('button',{name:'Inspect ↗'}).first().click();
+ await page.locator('[data-page=runs]').click();await page.locator('[data-filter=FAIL]').click();
+ await page.getByRole('button',{name:'Inspect ↗'}).first().click();await page.waitForFunction(()=>document.querySelector('#detail').open);
  await check('regression evidence',async()=>{assert.equal(await page.locator('#detail .badge.fail').first().textContent(),'FAIL');assert.match(await page.locator('#detail').textContent(),/No policy violations/);});
  await page.locator('#close-detail').click();
  await page.locator('[data-page=scenarios]').click();await page.getByRole('heading',{name:'Small worlds. Real consequences.'}).waitFor();
@@ -46,7 +47,7 @@ async function check(name,fn){await fn();checks++;console.log('PASS '+name);}
  await capture('03-fault-studio');
  await page.getByRole('button',{name:'Save & rehearse'}).click();await page.waitForFunction(()=>document.querySelector('#detail').open);
  await check('fault studio catches regression',async()=>assert.equal(await page.locator('#detail .badge.fail').first().textContent(),'FAIL'));
- await page.locator('#close-detail').click();await page.locator('[data-page=compare]').click();
+ await page.locator('#close-detail').click();await page.locator('[data-page=compare]').click();await page.locator('#baseline').waitFor();
  const ids=await page.evaluate(()=>{const a=Array.from(document.querySelector('#baseline').options);return {b:a.find(x=>x.textContent.includes('Support')&&x.textContent.includes('reference')).value,c:a.find(x=>x.textContent.includes('Support')&&x.textContent.includes('regression')).value};});
  await page.locator('#baseline').selectOption(ids.b);await page.locator('#candidate').selectOption(ids.c);await page.getByRole('button',{name:'Compare outcomes'}).click();await page.locator('#comparison .badge').waitFor();
  await check('release comparison blocks regression',async()=>assert.equal(await page.locator('#comparison .badge').textContent(),'BLOCK'));

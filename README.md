@@ -163,8 +163,7 @@ verixa list
 Python tests cover engine correctness, approval matching, idempotency, fault recovery,
 policy denial, input validation, persistence/concurrency, API authentication, CLI exit codes,
 exports/replay, comparison and the model tool loop using a local mock provider. Chromium tests
-cover the real UI against a running backend; they are included but could not be run in the
-authoring environment because Chromium could not be installed. A separate console harness
+cover the real UI against a running backend and run in CI. A separate console harness
 tests application logic against a running API without rendering a browser. [Validation report](docs/VALIDATION.md).
 
 ## Status and boundaries
