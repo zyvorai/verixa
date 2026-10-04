@@ -52,7 +52,8 @@ const config: Config = {
   themeConfig: {
     image: 'hero-overview.png',
     colorMode: {
-      respectPrefersColorScheme: true,
+      defaultMode: 'dark',
+      respectPrefersColorScheme: false,
     },
     navbar: {
       title: 'Verixa',
