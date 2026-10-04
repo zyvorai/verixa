@@ -8,58 +8,47 @@
   Build: ./docs/social/build-hero-dark.sh  ->  verixa-hero-dark.jpg (2400x1260)
 -->
 <style>
-  :root { --blue:#0071e3; --signal:#2997ff; --cyan:#64d2ff; --green:#30d158; --amber:#ff9f0a;
+  :root { --blue:#0071e3; --signal:#2997ff; --cyan:#64d2ff; --green:#30d158; --amber:#ff9f0a; --red:#ff453a; --violet:#bf5af2;
     --sans:'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif; --mono:'SF Mono',Menlo,Consolas,monospace; }
   * { box-sizing:border-box; }
   html,body { margin:0; padding:0; }
   body { width:1200px; height:630px; overflow:hidden; color:#f5f5f7; font-family:var(--sans); position:relative; background:#000; }
   .aurora { position:absolute; inset:0;
-    background:radial-gradient(720px 460px at 80% 16%, rgba(41,151,255,.40), transparent 62%),
-               radial-gradient(600px 420px at 104% 98%, rgba(100,210,255,.20), transparent 60%),
+    background:radial-gradient(720px 460px at 80% 16%, rgba(41,151,255,.34), transparent 62%),
+               radial-gradient(600px 420px at 104% 98%, rgba(100,210,255,.16), transparent 60%),
                radial-gradient(520px 380px at 6% 110%, rgba(0,113,227,.28), transparent 60%); }
-  .grid { position:absolute; inset:0; opacity:.09;
-    background-image:linear-gradient(rgba(120,180,255,.9) 1px,transparent 1px),linear-gradient(90deg,rgba(120,180,255,.9) 1px,transparent 1px);
-    background-size:44px 44px; -webkit-mask-image:radial-gradient(900px 520px at 72% 42%, #000 18%, transparent 75%); }
-  .left { position:absolute; left:60px; top:52px; width:560px; z-index:3; }
+  .copy { position:absolute; left:60px; top:52px; width:560px; z-index:3; }
   .brand { display:flex; align-items:center; gap:12px; font-family:var(--mono); font-size:14px; letter-spacing:.18em; text-transform:uppercase; color:#a1a1a6; }
   .brand b { color:#fff; }
   .word { margin:20px 0 0; font-size:112px; line-height:.95; font-weight:800; letter-spacing:-.05em; white-space:nowrap;
     background:linear-gradient(92deg,#fff 0%,#e3f0ff 38%,var(--signal) 74%,var(--cyan) 100%); -webkit-background-clip:text; background-clip:text; color:transparent; padding-bottom:6px; }
   .tag { margin:14px 0 0; font-size:31px; line-height:1.15; font-weight:700; letter-spacing:-.02em; }
   .tag em { font-style:normal; color:var(--signal); }
-  .lede { margin:12px 0 0; font-size:18px; line-height:1.45; color:#b8b8bf; width:520px; }
+  .lede { margin:12px 0 0; font-size:18px; line-height:1.45; color:#b8b8bf; width:520px; text-shadow:0 1px 12px #000; }
   .stats { margin-top:24px; display:flex; gap:32px; }
   .stat b { display:block; font-size:34px; font-weight:800; letter-spacing:-.03em; color:#fff; }
   .stat span { font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:#8e8e93; }
   .pill { position:absolute; left:60px; bottom:40px; display:flex; gap:10px; z-index:3; }
-  .pill span { font-family:var(--mono); font-size:13.5px; font-weight:700; padding:7px 13px; border-radius:18px; border:1.5px solid rgba(255,255,255,.2); color:#e5e5ea; background:rgba(255,255,255,.04); }
+  .pill span { font-family:var(--mono); font-size:13.5px; font-weight:700; padding:7px 13px; border-radius:18px; border:1.5px solid rgba(255,255,255,.2); color:#e5e5ea; background:rgba(0,0,0,.6); }
   .pill span.b { background:var(--blue); border-color:var(--blue); color:#fff; box-shadow:0 0 24px rgba(0,113,227,.55); }
-
-  .right { position:absolute; left:652px; top:96px; width:560px; z-index:2; }
-  .win { position:relative; width:560px; border-radius:16px; overflow:hidden; z-index:2;
-    background:linear-gradient(180deg, rgba(22,24,30,.94), rgba(10,11,14,.96));
-    box-shadow:0 50px 100px rgba(0,0,0,.75), 0 0 0 1px rgba(255,255,255,.14), 0 0 90px rgba(41,151,255,.22);
-    transform:perspective(1600px) rotateY(-14deg) rotateX(4deg); transform-origin:left center; }
-  .bar { height:34px; display:flex; align-items:center; gap:8px; padding:0 14px; background:rgba(255,255,255,.05); border-bottom:1px solid rgba(255,255,255,.07); }
-  .bar i { width:11px; height:11px; border-radius:50%; background:#ff5f57; } .bar i:nth-child(2){background:#febc2e} .bar i:nth-child(3){background:#28c840}
-  .bar em { margin-left:auto; margin-right:auto; font-style:normal; font-family:var(--mono); font-size:12px; color:#8e8e93; transform:translateX(-24px); }
-  .term { min-height:214px; padding:20px 22px 24px; font-family:var(--mono); font-size:15.5px; line-height:1.75; }
-  .l { white-space:pre; overflow:hidden; text-overflow:ellipsis; color:#f5f5f7; }
-  .l .p { color:var(--signal); font-weight:700; }
-  .l.out { color:#a1a1a6; }
-  .l.cm { color:#6e6e73; }
-  .l.ok { color:#d1f7dc; } .l.ok span { color:var(--green); font-weight:700; }
-  .l.warn { color:#ffe1b0; } .l.warn span { color:var(--amber); font-weight:700; }
-  .cur { display:inline-block; width:9px; height:18px; background:var(--signal); vertical-align:-3px; box-shadow:0 0 12px var(--signal); }
-  .chips { margin:34px 0 0 38px; width:480px; display:flex; flex-wrap:wrap; gap:10px; position:relative; z-index:3; }
-  .chips span { font-family:var(--mono); font-size:13px; font-weight:700; letter-spacing:.04em; padding:7px 12px; border-radius:14px;
-    color:#cfe6ff; background:rgba(10,20,35,.82); border:1px solid rgba(41,151,255,.45); box-shadow:0 0 18px rgba(41,151,255,.18); }
+  .art { position:absolute; left:520px; top:0; width:680px; height:630px; z-index:2; }
+  .art svg { display:block; }
+  #labels { position:absolute; inset:0; z-index:4; pointer-events:none; }
+  .lbl { position:absolute; font-family:var(--mono); font-size:12.5px; color:#a1a1a6; text-align:center; transform:translate(-50%,-50%); white-space:nowrap; }
+  .lbl b { display:block; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#e5e5ea; }
+  .lbl span { display:block; margin-top:3px; }
+  .lbl.box { padding:7px 12px; border-radius:12px; background:rgba(8,10,14,.85); border:1px solid rgba(255,255,255,.14); }
+  .lbl.chip { padding:6px 11px; border-radius:13px; font-size:12.5px; font-weight:700; color:#cfe6ff; background:rgba(10,20,35,.85); border:1px solid rgba(41,151,255,.5); box-shadow:0 0 16px rgba(41,151,255,.2); }
+  .lbl.left { transform:translate(0,-50%); text-align:left; }
+  .lbl.right { transform:translate(-100%,-50%); text-align:right; }
+  .ok { color:var(--green) !important; } .warn { color:var(--amber) !important; } .bad { color:var(--red) !important; } .sig { color:var(--signal) !important; } .cy { color:var(--cyan) !important; } .vi { color:var(--violet) !important; }
 </style>
 </head>
 <body>
 <div class="aurora"></div>
-<div class="grid"></div>
-<div class="left">
+<div class="art"><svg id="art" width="680" height="630" viewBox="0 0 680 630" xmlns="http://www.w3.org/2000/svg"></svg></div>
+<div id="labels"></div>
+<div class="copy">
   <div class="brand"><svg viewBox="0 0 64 64" width="30" height="30" aria-hidden="true"><defs><linearGradient id="zb" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ff5a15"/><stop offset="1" stop-color="#cc420a"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#zb)"/><path d="M18.5,20.5 45.5,20.5 18.5,43.5 45.5,43.5" fill="none" stroke="#fff" stroke-width="8.3" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Zyvor</b><span>&middot;</span><span>AI agent rehearsal</span></div>
   <div class="word">Verixa</div>
   <div class="tag">Rehearse every action.<br><em>Ship with evidence.</em></div>
@@ -67,8 +56,105 @@
   <div class="stats"><div class="stat"><b>10</b><span>scenarios</span></div><div class="stat"><b>5</b><span>fault types</span></div><div class="stat"><b>0</b><span>runtime deps</span></div></div>
 </div>
 <div class="pill"><span class="b">github.com/zyvorai/verixa</span><span>Apache-2.0</span></div>
-<div class="right"><div class="win"><div class="bar"><i></i><i></i><i></i><em>verixa</em></div>
-<div class="term"><div class="l"><span class="p">$</span> python3 -m verixa run all --junit out.xml</div><div class="l ok"><span>&#10003;</span> PASS refund-commit-timeout checks=5/5</div><div class="l ok"><span>&#10003;</span> PASS ticket-injection checks=3/3</div><div class="l"><span class="p">$</span> python3 -m verixa run ticket-injection \</div><div class="l out">    --agent regression</div><div class="l warn"><span>!</span> FAIL ticket-injection checks=1/3  (exit 3)</div><div class="l"><span class="p">$</span> <i class="cur"></i></div></div></div>
-<div class="chips"><span>Python 3.11+</span><span>OpenAI-compatible</span><span>JUnit XML</span><span>SQLite</span><span>Docker</span></div></div>
+<script>
+var Z = (function () {
+  var NS = 'http://www.w3.org/2000/svg', svg = document.getElementById('art'), labels = document.getElementById('labels');
+  var seed = 20261004;
+  function rnd() { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }
+  function el(tag, a, parent) { var n = document.createElementNS(NS, tag); for (var k in a) n.setAttribute(k, a[k]); (parent || svg).appendChild(n); return n; }
+  function g(attrs) { return el('g', attrs || {}); }
+  function label(x, y, inner, cls, style) { var d = document.createElement('div'); d.className = 'lbl ' + (cls || ''); d.style.left = (520 + x) + 'px'; d.style.top = y + 'px'; if (style) d.setAttribute('style', d.getAttribute('style') + ';' + style); d.innerHTML = inner; labels.appendChild(d); return d; }
+  return { NS: NS, svg: svg, W: 680, H: 630, rnd: rnd, el: el, g: g, label: label,
+    reseed: function (s) { seed = s; },
+    c: { blue: '#0071e3', signal: '#2997ff', cyan: '#64d2ff', green: '#30d158', amber: '#ff9f0a', red: '#ff453a', violet: '#bf5af2', teal: '#40c8e0', indigo: '#5e5ce6', pink: '#ff375f', white: '#f5f5f7', grey: '#8e8e93' } };
+})();
+(function () {
+// Verixa: rehearsal stage. A spotlight cone falls on a sequence of tool-call nodes; an injected fault strikes
+// as lightning; the run ends at a verify gate that lets the passing run through and blocks the regression.
+var C = Z.c, DY = 26;
+var defs = Z.el('defs', {});
+defs.innerHTML = '<filter id="vx-gl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>' +
+  '<filter id="vx-sf" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter>' +
+  '<filter id="vx-bl" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="6"/></filter>' +
+  '<linearGradient id="vx-cone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e6f3ff" stop-opacity=".5"/><stop offset=".55" stop-color="#9fd0ff" stop-opacity=".16"/><stop offset="1" stop-color="#64d2ff" stop-opacity=".06"/></linearGradient>' +
+  '<radialGradient id="vx-pool"><stop offset="0" stop-color="#cfe8ff" stop-opacity=".45"/><stop offset=".7" stop-color="#64d2ff" stop-opacity=".12"/><stop offset="1" stop-color="#64d2ff" stop-opacity="0"/></radialGradient>' +
+  '<radialGradient id="vx-floor" cy=".35"><stop offset="0" stop-color="#14305a" stop-opacity=".8"/><stop offset="1" stop-color="#0a1426" stop-opacity="0"/></radialGradient>';
+
+var apex = { x: 340, y: 40 }, pool = { x: 330, y: 372, rx: 196, ry: 46 };
+
+// stage floor: perspective ellipse with rings
+Z.el('ellipse', { cx: 370, cy: 392, rx: 290, ry: 92, fill: 'url(#vx-floor)' });
+for (var i = 0; i < 6; i++) Z.el('ellipse', { cx: 370, cy: 392, rx: 120 + i * 34, ry: 30 + i * 11, fill: 'none', stroke: 'rgba(120,185,255,' + (0.16 - i * 0.022).toFixed(3) + ')', 'stroke-width': 1 });
+Z.el('path', { d: 'M88,392 A282,88 0 0 0 652,392', fill: 'none', stroke: 'rgba(100,210,255,.22)', 'stroke-width': 1.2 });
+
+// spotlight cone + pool
+Z.el('path', { d: 'M' + (apex.x - 10) + ',' + apex.y + ' L' + (pool.x - pool.rx) + ',' + pool.y + ' A' + pool.rx + ',' + pool.ry + ' 0 0 0 ' + (pool.x + pool.rx) + ',' + pool.y + ' L' + (apex.x + 10) + ',' + apex.y + 'Z', fill: 'url(#vx-cone)', filter: 'url(#vx-bl)' });
+Z.el('ellipse', { cx: pool.x, cy: pool.y, rx: pool.rx, ry: pool.ry, fill: 'url(#vx-pool)' });
+for (var i = 0; i < 60; i++) {
+  var t = Z.rnd(), y = apex.y + 20 + t * (pool.y - apex.y - 40), half = 10 + (pool.rx - 10) * (y - apex.y) / (pool.y - apex.y);
+  var x = apex.x + (pool.x - apex.x) * (y - apex.y) / (pool.y - apex.y) + (Z.rnd() * 2 - 1) * half * .85;
+  Z.el('circle', { cx: x, cy: y, r: .6 + Z.rnd() * 1.1, fill: '#e6f3ff', opacity: (0.15 + Z.rnd() * 0.45).toFixed(2) });
+}
+// lamp housing
+Z.el('rect', { x: apex.x - 22, y: apex.y - 16, width: 44, height: 16, rx: 4, fill: 'rgba(10,18,32,.95)', stroke: 'rgba(200,225,255,.5)', 'stroke-width': 1.2 });
+Z.el('ellipse', { cx: apex.x, cy: apex.y, rx: 12, ry: 3, fill: '#fff', filter: 'url(#vx-gl)' });
+
+// tool-call sequence
+var nodes = [{ x: 150, y: 368, n: 'order.get' }, { x: 278, y: 352, n: 'refund.create' }, { x: 410, y: 356, n: 'approval.request' }];
+var gate = { x: 548, y: 360 };
+var seq = 'M' + nodes[0].x + ',' + nodes[0].y + ' Q214,350 ' + nodes[1].x + ',' + nodes[1].y + ' Q344,342 ' + nodes[2].x + ',' + nodes[2].y + ' Q490,368 ' + (gate.x - 26) + ',' + gate.y;
+Z.el('path', { d: seq, fill: 'none', stroke: C.cyan, 'stroke-width': 5, opacity: .12 });
+Z.el('path', { d: seq, fill: 'none', stroke: 'rgba(160,215,255,.8)', 'stroke-width': 1.5, 'stroke-dasharray': '5 4' });
+
+// injected fault: lightning strikes the refund.create -> approval.request call
+var hit = { x: 344, y: 348 };
+var bolt = 'M318,96 L336,170 L318,176 L346,256 L330,262 L' + hit.x + ',' + hit.y;
+Z.el('path', { d: bolt, fill: 'none', stroke: C.amber, 'stroke-width': 7, opacity: .25, filter: 'url(#vx-bl)', 'stroke-linejoin': 'round' });
+Z.el('path', { d: bolt, fill: 'none', stroke: '#ffd38a', 'stroke-width': 2, 'stroke-linejoin': 'round', filter: 'url(#vx-gl)' });
+Z.el('path', { d: 'M336,170 L360,196 L356,210', fill: 'none', stroke: '#ffd38a', 'stroke-width': 1, opacity: .7, filter: 'url(#vx-gl)' });
+Z.el('circle', { cx: hit.x, cy: hit.y, r: 16, fill: C.amber, opacity: .35, filter: 'url(#vx-sf)' });
+for (var k = 0; k < 9; k++) {
+  var a = k / 9 * Math.PI * 2, r1 = 6, r2 = 12 + (k % 2) * 6;
+  Z.el('line', { x1: hit.x + r1 * Math.cos(a), y1: hit.y + r1 * Math.sin(a), x2: hit.x + r2 * Math.cos(a), y2: hit.y + r2 * Math.sin(a), stroke: '#ffd38a', 'stroke-width': 1.2 });
+}
+
+// nodes
+nodes.forEach(function (n) {
+  Z.el('circle', { cx: n.x, cy: n.y, r: 22, fill: C.cyan, opacity: .14, filter: 'url(#vx-sf)' });
+  var hex = '';
+  for (var k = 0; k < 6; k++) { var a = Math.PI / 6 + k * Math.PI / 3; hex += (k ? 'L' : 'M') + (n.x + 15 * Math.cos(a)).toFixed(1) + ',' + (n.y + 15 * Math.sin(a)).toFixed(1); }
+  Z.el('path', { d: hex + 'Z', fill: 'rgba(6,10,18,.95)', stroke: C.cyan, 'stroke-width': 1.8, filter: 'url(#vx-gl)' });
+  Z.el('circle', { cx: n.x, cy: n.y, r: 3.5, fill: '#fff' });
+  Z.label(n.x, n.y + 34 + DY, '<span style="margin:0;color:#cfe6ff">' + n.n + '</span>');
+});
+
+// verify gate: two pillars and a lintel with a scan beam
+var gx = gate.x, gy = gate.y;
+Z.el('rect', { x: gx - 30, y: gy - 96, width: 60, height: 124, fill: C.signal, opacity: .12, filter: 'url(#vx-sf)' });
+Z.el('rect', { x: gx - 26, y: gy - 88, width: 7, height: 114, rx: 2, fill: 'rgba(10,18,32,.95)', stroke: C.signal, 'stroke-width': 1.4 });
+Z.el('rect', { x: gx + 19, y: gy - 88, width: 7, height: 114, rx: 2, fill: 'rgba(10,18,32,.95)', stroke: C.signal, 'stroke-width': 1.4 });
+Z.el('rect', { x: gx - 34, y: gy - 100, width: 68, height: 13, rx: 3, fill: 'rgba(10,18,32,.95)', stroke: C.signal, 'stroke-width': 1.6, filter: 'url(#vx-gl)' });
+var cg = Z.el('linearGradient', { id: 'vx-curtain', x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
+cg.innerHTML = '<stop offset="0" stop-color="#2997ff" stop-opacity=".1"/><stop offset=".7" stop-color="#64d2ff" stop-opacity=".4"/><stop offset="1" stop-color="#64d2ff" stop-opacity=".05"/>';
+Z.el('rect', { x: gx - 19, y: gy - 87, width: 38, height: 112, fill: 'url(#vx-curtain)' });
+Z.el('line', { x1: gx - 19, y1: gy - 2, x2: gx + 19, y2: gy - 2, stroke: '#bfeaff', 'stroke-width': 1.6, filter: 'url(#vx-gl)' });
+Z.el('circle', { cx: gx - 11, cy: gy - 93.5, r: 3.2, fill: C.green, filter: 'url(#vx-gl)' });
+Z.el('circle', { cx: gx + 11, cy: gy - 93.5, r: 3.2, fill: C.red, filter: 'url(#vx-gl)' });
+
+// exits: pass continues to release, regression is blocked
+Z.el('path', { d: 'M' + (gx + 26) + ',' + (gy - 8) + ' Q' + (gx + 50) + ',' + (gy - 40) + ' ' + (gx + 70) + ',' + (gy - 56), fill: 'none', stroke: C.green, 'stroke-width': 2, filter: 'url(#vx-gl)' });
+Z.el('circle', { cx: gx + 76, cy: gy - 62, r: 11, fill: 'rgba(6,10,18,.95)', stroke: C.green, 'stroke-width': 1.8, filter: 'url(#vx-gl)' });
+Z.el('path', { d: 'M' + (gx + 71) + ',' + (gy - 62) + ' l3.5,3.5 l6.5,-7', fill: 'none', stroke: C.green, 'stroke-width': 2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+Z.el('path', { d: 'M' + (gx + 26) + ',' + (gy + 8) + ' Q' + (gx + 50) + ',' + (gy + 36) + ' ' + (gx + 70) + ',' + (gy + 50), fill: 'none', stroke: C.red, 'stroke-width': 2, 'stroke-dasharray': '4 3', filter: 'url(#vx-gl)' });
+Z.el('circle', { cx: gx + 76, cy: gy + 56, r: 11, fill: 'rgba(6,10,18,.95)', stroke: C.red, 'stroke-width': 1.8, filter: 'url(#vx-gl)' });
+Z.el('path', { d: 'M' + (gx + 72) + ',' + (gy + 52) + ' l8,8 M' + (gx + 80) + ',' + (gy + 52) + ' l-8,8', fill: 'none', stroke: C.red, 'stroke-width': 2, 'stroke-linecap': 'round' });
+
+Z.label(hit.x + 58, 196 + DY, '<span class="warn" style="margin:0">timeout</span>');
+Z.label(gx + 20, gy + 104 + DY, '<b>verify</b><span><i class="ok" style="font-style:normal">PASS 5/5</i> &middot; <i class="bad" style="font-style:normal">FAIL 1/3</i></span>');
+Z.label(578, 46, 'faults &middot; JUnit XML', 'chip');
+var shift = Z.g({ transform: 'translate(0,' + DY + ')' });
+Array.prototype.slice.call(Z.svg.childNodes).forEach(function (n) { if (n !== shift && n !== defs) shift.appendChild(n); });
+})();
+</script>
 </body>
 </html>
