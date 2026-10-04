@@ -1,0 +1,8 @@
+.git
+.verixa
+.venv
+node_modules
+__pycache__
+artifacts
+*.db
+docs/ux

@@ -1,0 +1,11 @@
+services:
+  verixa:
+    build: .
+    ports: ["127.0.0.1:8788:8788"]
+    volumes: ["verixa-data:/data"]
+    read_only: true
+    tmpfs: ["/tmp"]
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+volumes:
+  verixa-data:

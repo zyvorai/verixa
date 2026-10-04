@@ -1,0 +1,8 @@
+{
+  "label": "Core Concepts",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "How a rehearsal runs, how scenarios and assertions are defined, how agents plug in, and the HTTP API."
+  }
+}

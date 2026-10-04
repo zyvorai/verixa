@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.venv/
+.verixa/
+*.db
+*.db-journal
+node_modules/
+dist/
+build/
+*.egg-info/
+artifacts/
+.env
+.DS_Store
+website/.docusaurus/
+website/build/
+.cursor/

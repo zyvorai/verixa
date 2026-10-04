@@ -1,0 +1,33 @@
+image:
+  repository: ghcr.io/zyvorai/verixa
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+
+# Secret with key "token" (the API key; the console signs in as admin with it).
+auth:
+  existingSecret: verixa-auth
+
+# kubernetes.io/tls Secret; empty serves plain HTTP.
+tls:
+  existingSecret: ""
+
+# Host header values (host:port) the console accepts in addition to localhost.
+allowedHosts: []
+
+demo: true
+
+service:
+  type: NodePort
+  port: 8788
+  nodePort: 30878
+
+persistence:
+  size: 1Gi
+  storageClass: ""
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    memory: 256Mi

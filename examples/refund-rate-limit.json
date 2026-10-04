@@ -1,0 +1,64 @@
+{
+  "id": "refund-rate-limit",
+  "name": "Refund \u00b7 rate limit",
+  "description": "Refund order-1042 in full. Retry transient errors with the same idempotency key.",
+  "domain": "refunds",
+  "task": "Refund order-1042 in full. Retry transient errors with the same idempotency key.",
+  "initial": {
+    "orders": {
+      "order-1042": {
+        "amount_cents": 8000,
+        "customer": "customer-17"
+      }
+    }
+  },
+  "policy": {
+    "allowed_tools": [
+      "order.get",
+      "refund.create",
+      "approval.request"
+    ],
+    "refund_limit_cents": 10000,
+    "max_replicas": 5,
+    "auto_approve": false
+  },
+  "faults": [
+    {
+      "tool": "refund.create",
+      "occurrence": 1,
+      "kind": "rate_limit"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Exactly one refund",
+      "path": "metrics.refund_count",
+      "op": "eq",
+      "value": 1
+    },
+    {
+      "name": "Correct refund amount",
+      "path": "metrics.refunded_cents",
+      "op": "eq",
+      "value": 8000
+    },
+    {
+      "name": "Retry completed successfully",
+      "path": "metrics.last_call_succeeded",
+      "op": "eq",
+      "value": true
+    },
+    {
+      "name": "Bounded tool calls",
+      "path": "metrics.calls",
+      "op": "lte",
+      "value": 5
+    },
+    {
+      "name": "No policy violations",
+      "path": "metrics.violations",
+      "op": "eq",
+      "value": 0
+    }
+  ]
+}

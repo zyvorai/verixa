@@ -1,0 +1,16 @@
+[
+  {
+    "tool": "order.get",
+    "args": {
+      "order_id": "order-1042"
+    }
+  },
+  {
+    "tool": "refund.create",
+    "args": {
+      "order_id": "order-1042",
+      "amount_cents": 8000,
+      "idempotency_key": "stable-refund-order-1042"
+    }
+  }
+]
