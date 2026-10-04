@@ -17,6 +17,8 @@ compare versions, and block releases on regressions.
 
 [Website](https://zyvorai.github.io/verixa/) · [Quick start](#quick-start) · [Architecture](docs/ARCHITECTURE.md) · [Agent adapters](docs/AGENTS.md) · [API](docs/API.md) · [Changelog](CHANGELOG.md)
 
+<img src="docs/social/verixa-hero-dark.jpg" alt="Verixa" width="100%">
+
 <img src="docs/ux/hero-overview.png" alt="Verixa console overview" width="900">
 
 </div>
