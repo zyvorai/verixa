@@ -73,6 +73,7 @@ const config: Config = {
           label: 'Gallery',
           position: 'left',
         },
+        {to: '/support', label: 'Support', position: 'right'},
         {
           href: 'https://github.com/zyvorai/verixa',
           label: 'GitHub',
@@ -100,6 +101,7 @@ const config: Config = {
         {
           title: 'Project',
           items: [
+            {label: 'Support', to: '/support'},
             {label: 'GitHub', href: 'https://github.com/zyvorai/verixa'},
             {label: 'Changelog', href: 'https://github.com/zyvorai/verixa/blob/main/CHANGELOG.md'},
             {label: 'Contributing', href: 'https://github.com/zyvorai/verixa/blob/main/CONTRIBUTING.md'},
