@@ -143,4 +143,21 @@ class EngineTests(unittest.TestCase):
         s=copy.deepcopy(self.scenarios['infra-scale']);s['assertions'].append(s['assertions'][0])
         with self.assertRaises(ValidationError):validate_scenario(s)
 
+    def test_approval_is_single_use(self):
+        s=copy.deepcopy(self.scenarios['refund-approved'])
+        w=World(s);ref=lambda k,n=12000:w.call({'tool':'refund.create','args':{'order_id':'order-1042','amount_cents':n,'idempotency_key':k}})
+        w.call({'tool':'approval.request','args':{'order_id':'order-1042','amount_cents':12000}})
+        self.assertEqual(ref('a')['amount_cents'],12000)
+        self.assertEqual(ref('a')['deduplicated'],True)
+        self.assertEqual(ref('b')['error'],'policy_denied')
+        self.assertEqual(len(w.state['refunds']),1)
+
+    def test_assertion_path_indexes_lists(self):
+        s=copy.deepcopy(self.scenarios['refund-happy'])
+        s['assertions']=[{'name':'first','path':'refunds.0.amount_cents','op':'gte','value':1}]
+        from verixa.engine import evaluate
+        w=World(s);self.assertFalse(evaluate(w)[0]['passed'])
+        w.call({'tool':'refund.create','args':{'order_id':'order-1042','amount_cents':100,'idempotency_key':'a'}})
+        self.assertTrue(evaluate(w)[0]['passed'])
+
 if __name__=='__main__':unittest.main()

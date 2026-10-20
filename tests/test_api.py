@@ -50,6 +50,12 @@ class ApiTests(unittest.TestCase):
     def test_arbitrary_model_not_allowed(self):self.assertEqual(self.request('/api/v1/runs',{'scenario_id':'infra-scale','agent':'model','url':'http://evil'})[0],400)
     def test_bad_json(self):self.assertEqual(self.request('/api/v1/runs',raw=b'{')[0],400)
     def test_nonfinite(self):self.assertEqual(self.request('/api/v1/runs',raw=b'{"scenario_id":NaN}')[0],400)
+    def test_storage_error_returns_503(self):
+        orig=self.store.save_scenario
+        def boom(b):raise __import__('sqlite3').OperationalError('database is locked')
+        self.store.save_scenario=boom
+        try:self.assertEqual(self.request('/api/v1/scenarios',{})[0],503)
+        finally:self.store.save_scenario=orig
     def test_body_limit(self):self.assertEqual(self.request('/api/v1/runs',raw=b'x'*256001)[0],413)
     def test_wrong_content_type(self):self.assertEqual(self.request('/api/v1/runs',{},headers={'Content-Type':'text/plain'})[0],415)
     def test_bad_trace(self):self.assertEqual(self.request('/api/v1/runs',{'scenario_id':'infra-scale','agent':'replay','actions':[{'tool':'shell','args':{}}]})[0],400)
