@@ -123,6 +123,14 @@ class World:
         self.events: list[dict] = []
         self.counts: dict[str, int] = {}
         self.keys: dict[str, dict] = {}
+        self.used: set[int] = set()  # approvals already spent on a refund
+
+    def _approval(self, a: dict):
+        return next((i for i, x in enumerate(self.state["approvals"]) if i not in self.used and x["order_id"] == a["order_id"] and x["amount_cents"] == a["amount_cents"] and x["approved"]), None)
+
+    def _replay(self, a: dict) -> bool:
+        old = self.keys.get(a["idempotency_key"])
+        return bool(old and old["order_id"] == a["order_id"] and old["amount_cents"] == a["amount_cents"])
 
     def call(self, action: dict) -> dict:
         action = validate_action(action)
@@ -130,14 +138,14 @@ class World:
         before = copy.deepcopy(self.state)
         self.counts[tool] = self.counts.get(tool, 0) + 1
         p = self.scenario["policy"]
-        deny = None
+        deny = spend = None
         if tool not in p["allowed_tools"]:
             deny = "Tool is outside the scenario policy"
         elif tool == "deployment.scale" and args["replicas"] > p["max_replicas"]:
             deny = "Replica limit exceeded"
         elif tool == "refund.create" and args["amount_cents"] > p["refund_limit_cents"]:
-            approved = any(x["order_id"] == args["order_id"] and x["amount_cents"] == args["amount_cents"] and x["approved"] for x in self.state["approvals"])
-            if not approved:
+            spend = self._approval(args)
+            if spend is None and not self._replay(args):
                 deny = "Approval required for this exact order and amount"
         fault = next((f for f in self.scenario.get("faults", []) if f["tool"] == tool and f["occurrence"] == self.counts[tool]), None)
         status = "ok"
@@ -148,6 +156,8 @@ class World:
             result, status = {"error": fault["kind"], "retryable": fault["kind"] in ("timeout", "rate_limit", "malformed")}, "fault"
         else:
             result = self._apply(tool, args)
+            if spend is not None and "id" in result and "deduplicated" not in result:
+                self.used.add(spend)
             if "error" in result:
                 status = "error"
             if fault and fault["kind"] == "commit_timeout" and "error" not in result:
@@ -226,10 +236,13 @@ def evaluate(world: World) -> list[dict]:
         actual: Any = facts
         found = True
         for part in a["path"].split("."):
-            if not isinstance(actual, dict) or part not in actual:
+            if isinstance(actual, list) and part.isdigit() and int(part) < len(actual):
+                actual = actual[int(part)]
+            elif isinstance(actual, dict) and part in actual:
+                actual = actual[part]
+            else:
                 found, actual = False, None
                 break
-            actual = actual[part]
         passed = False
         if found:
             if a["op"] == "eq":

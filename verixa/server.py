@@ -4,6 +4,7 @@ import hmac
 import json
 import mimetypes
 import secrets
+import sqlite3
 import ssl
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -181,6 +182,8 @@ def make_server(store, host="127.0.0.1", port=8788, token=None, allowed_hosts=()
                 return self.reply(400, {"error": "Invalid request"})
             except (ValueError, KeyError, UnicodeError) as exc:
                 return self.reply(400, {"error": str(exc) if isinstance(exc, ValidationError) else "Invalid request"})
+            except sqlite3.Error:
+                return self.reply(503, {"error": "Storage unavailable"})
 
     class Server(ThreadingHTTPServer):
         daemon_threads = True
