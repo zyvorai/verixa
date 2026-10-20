@@ -106,6 +106,14 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(r['error'],'StepLimitExceeded')
         self.assertEqual(r['verdict'],'FAIL')
 
+    def test_step_limit_boundary_allows_exact_budget(self):
+        s=self.scenarios['infra-scale']
+        n=len(run(s,DemoAgent())['events'])
+        self.assertEqual(run(s,DemoAgent(),n)['error'],None)
+        r=run(s,DemoAgent(),n-1)
+        self.assertEqual(r['error'],'StepLimitExceeded')
+        self.assertEqual(len(r['events']),n-1)
+
     def test_adapter_exception_is_sanitized(self):
         class Broken:
             name='broken'

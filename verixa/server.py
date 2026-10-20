@@ -25,7 +25,7 @@ def mint_session(token, expires):
 
 def session_valid(token, value, now=None):
     expires, _, sig = value.partition(".")
-    if not expires.isdigit() or len(sig) != 64:
+    if not (expires.isascii() and expires.isdigit()) or len(sig) != 64:
         return False
     if (now or time.time()) > int(expires):
         return False

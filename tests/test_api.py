@@ -138,3 +138,18 @@ class HostAndTokenTests(unittest.TestCase):
                 s.shutdown();s.server_close();t.join()
 
 if __name__=='__main__':unittest.main()
+
+
+class SessionAndStoreTests(unittest.TestCase):
+    def test_non_ascii_digit_cookie_rejected(self):
+        from verixa.server import session_valid
+        self.assertFalse(session_valid('tokentoken','\u00b2.'+'0'*64))
+
+    def test_store_connections_closed(self):
+        import sqlite3
+        with tempfile.TemporaryDirectory() as d:
+            store=Store(d+'/s.db')
+            with store.connect() as db:
+                pass
+            with self.assertRaises(sqlite3.ProgrammingError):
+                db.execute('SELECT 1')
