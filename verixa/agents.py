@@ -2,6 +2,7 @@
 from __future__ import annotations
 import json
 import os
+import urllib.error
 import urllib.request
 import urllib.parse
 from .engine import TOOLS, ValidationError, canonical, validate_action
@@ -94,13 +95,23 @@ class ModelAgent:
         for e in events:
             tid = "call_" + str(e["sequence"])
             messages.extend([{"role": "assistant", "content": None, "tool_calls": [{"id": tid, "type": "function", "function": {"name": names[e["tool"]], "arguments": canonical(e["args"])}}]}, {"role": "tool", "tool_call_id": tid, "content": canonical(e["result"])}])
-        request = urllib.request.Request(self.base_url + "/chat/completions", data=canonical({"model": self.model, "messages": messages, "tools": tools, "parallel_tool_calls": False, "temperature": 0}).encode(), headers={"Content-Type": "application/json", "Authorization": "Bearer " + self.key})
         # Never follow redirects with Authorization to an unrelated endpoint.
         class NoRedirect(urllib.request.HTTPRedirectHandler):
             def redirect_request(self, req, fp, code, msg, headers, newurl):
                 return None
-        with urllib.request.build_opener(NoRedirect).open(request, timeout=self.timeout) as response:
-            data = response.read(1_000_001)
+        payload = {"model": self.model, "messages": messages, "tools": tools, "parallel_tool_calls": False, "temperature": 0}
+        while True:
+            request = urllib.request.Request(self.base_url + "/chat/completions", data=canonical(payload).encode(), headers={"Content-Type": "application/json", "Authorization": "Bearer " + self.key})
+            try:
+                with urllib.request.build_opener(NoRedirect).open(request, timeout=self.timeout) as response:
+                    data = response.read(1_000_001)
+                break
+            except urllib.error.HTTPError as error:
+                # Some current models reject temperature; retry once without it.
+                if error.code == 400 and "temperature" in payload and b"temperature" in error.read(4096):
+                    del payload["temperature"]
+                    continue
+                raise
         if len(data) > 1_000_000:
             raise ValidationError("Model response too large")
         body = json.loads(data)
