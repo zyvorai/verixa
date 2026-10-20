@@ -259,11 +259,13 @@ def run(scenario: dict, agent, max_steps: int = 30) -> dict:
     start = time.monotonic()
     error = None
     done = False
-    for _ in range(max_steps):
+    for step in range(max_steps + 1):  # the final probe lets an agent that used the whole budget signal completion
         try:
             action = agent.next_action(copy.deepcopy(world.scenario), copy.deepcopy(world.events))
             if action is None:
                 done = True
+                break
+            if step == max_steps:
                 break
             world.call(action)
         except Exception as exc:

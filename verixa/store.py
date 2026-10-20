@@ -5,6 +5,14 @@ from pathlib import Path
 from .engine import canonical, validate_scenario
 from .scenarios import bundled
 
+class _ClosingConnection(sqlite3.Connection):
+    # `with` on a plain connection only commits; close it too so handles are not leaked.
+    def __exit__(self, *exc):
+        try:
+            return super().__exit__(*exc)
+        finally:
+            self.close()
+
 class Store:
     def __init__(self, path):
         self.path = str(path)
@@ -15,7 +23,7 @@ class Store:
                 db.execute("INSERT OR IGNORE INTO scenarios VALUES(?,?)", (s["id"], canonical(s)))
 
     def connect(self):
-        return sqlite3.connect(self.path, timeout=10)
+        return sqlite3.connect(self.path, timeout=10, factory=_ClosingConnection)
 
     def scenarios(self):
         with self.connect() as db:

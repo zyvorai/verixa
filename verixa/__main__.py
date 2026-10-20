@@ -72,7 +72,8 @@ def main(argv=None):
             allowed = args.allowed_host + os.environ.get("VERIXA_ALLOWED_HOSTS", "").split(",")
             server = make_server(store, args.host, args.port, os.environ.get("VERIXA_TOKEN"), allowed, args.tls_cert, args.tls_key)
             print(f"Verixa → {server.scheme}://{args.host}:{server.server_port}", flush=True)
-            print("API token: " + server.api_token, flush=True)
+            if not os.environ.get("VERIXA_TOKEN"):
+                print("API token: " + server.api_token, flush=True)
             try:
                 server.serve_forever()
             except KeyboardInterrupt:
